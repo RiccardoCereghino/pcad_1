@@ -94,7 +94,7 @@ void *t_multiply_matrices(void *args) {
     double p;
     int y,x,n, f;
 
-    for (y = arg->thread_n * arg->blocks; y < ((arg->thread_n * arg->blocks) + arg->blocks) && (arg->R.rows); ++y) {
+    for (y = arg->thread_n * arg->blocks; y < ((arg->thread_n * arg->blocks) + arg->blocks) && y < (arg->R.rows); ++y) {
         for (x = 0; x < arg->R.cols; ++x) {
             p = 0;
             for (n = 0; n < arg->A.cols; ++n)
@@ -105,8 +105,6 @@ void *t_multiply_matrices(void *args) {
 
     arg->flags[arg->thread_n] = 1;
     __sync_synchronize();
-
-    clock_t begin = clock();
 
     while (1) {
         f = 1;
@@ -119,12 +117,8 @@ void *t_multiply_matrices(void *args) {
             continue;
         break;
     }
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("AAA spent: %f\n", time_spent);
 
-
-    for (y = arg->thread_n * arg->blocks; y < ((arg->thread_n * arg->blocks) + arg->blocks) && (arg->P.rows); ++y) {
+    for (y = arg->thread_n * arg->blocks; y < ((arg->thread_n * arg->blocks) + arg->blocks) && y < (arg->P.rows); ++y) {
         for (x = 0; x < arg->P.cols; ++x) {
             p = 0;
             for (n = 0; n < arg->C.cols; ++n)
